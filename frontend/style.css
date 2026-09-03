@@ -1,0 +1,1078 @@
+@import url(
+    'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap'
+);
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+:root {
+
+    --background: #f7f5f1;
+
+    --surface: #ffffff;
+
+    --text: #24211e;
+
+    --muted: #77716a;
+
+    --border: #e8e3dc;
+
+    --accent: #a77a45;
+
+    --accent-dark: #806037;
+
+}
+
+
+body {
+
+    font-family:
+        "DM Sans",
+        Arial,
+        sans-serif;
+
+    background:
+        var(--background);
+
+    color:
+        var(--text);
+
+    min-height: 100vh;
+}
+
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+
+.navbar {
+
+    height: 76px;
+
+    padding:
+        0 6%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background:
+        rgba(255,255,255,0.92);
+
+    border-bottom:
+        1px solid var(--border);
+
+}
+
+
+.brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.brand-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        var(--text);
+
+    color:
+        white;
+
+    font-size: 20px;
+}
+
+
+.brand-name {
+
+    font-weight: 700;
+
+    font-size: 18px;
+}
+
+
+.brand-subtitle {
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    color:
+        var(--muted);
+
+    margin-top: 2px;
+}
+
+
+.nav-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 13px;
+
+    color:
+        var(--muted);
+}
+
+
+.status-dot {
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #6ca56c;
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.hero {
+
+    padding:
+        85px 20px 70px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            var(--background)
+        );
+}
+
+
+.eyebrow {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    color:
+        var(--accent);
+
+    margin-bottom: 18px;
+}
+
+
+.hero h1 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(42px, 6vw, 72px);
+
+    line-height: 1.08;
+
+    font-weight: 500;
+
+    max-width: 850px;
+
+    margin: auto;
+}
+
+
+.hero h1 span {
+
+    color:
+        var(--accent);
+}
+
+
+.hero p {
+
+    max-width: 650px;
+
+    margin: 24px auto 0;
+
+    color:
+        var(--muted);
+
+    font-size: 17px;
+
+    line-height: 1.7;
+}
+
+
+/* ============================================================
+   MAIN
+   ============================================================ */
+
+.main-container {
+
+    width: 90%;
+
+    max-width: 1200px;
+
+    margin: auto;
+}
+
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+
+.panel,
+.results-panel {
+
+    background:
+        var(--surface);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 20px;
+
+    padding: 35px;
+
+    margin-bottom: 25px;
+}
+
+
+.section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 30px;
+}
+
+
+.step-number {
+
+    width: 46px;
+
+    height: 46px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        var(--text);
+
+    color:
+        white;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.section-label {
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    font-weight: 700;
+
+    color:
+        var(--accent);
+
+    margin-bottom: 5px;
+}
+
+
+.section-header h2 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 28px;
+
+    font-weight: 500;
+}
+
+
+/* ============================================================
+   NECKLACE GRID
+   ============================================================ */
+
+.necklace-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 18px;
+}
+
+
+.necklace-card {
+
+    position: relative;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    background:
+        #faf9f7;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        border 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.necklace-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0,0,0,0.08);
+}
+
+
+.necklace-card.selected {
+
+    border:
+        2px solid var(--accent);
+
+    box-shadow:
+        0 10px 25px
+        rgba(167,122,69,0.18);
+}
+
+
+.necklace-card img {
+
+    width: 100%;
+
+    height: 210px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+.necklace-card-info {
+
+    padding:
+        13px 15px;
+
+    border-top:
+        1px solid var(--border);
+}
+
+
+.necklace-card-info strong {
+
+    font-size: 14px;
+}
+
+
+.necklace-card-info span {
+
+    display: block;
+
+    font-size: 11px;
+
+    color:
+        var(--muted);
+
+    margin-top: 3px;
+}
+
+
+.selected-badge {
+
+    position: absolute;
+
+    top: 12px;
+
+    right: 12px;
+
+    background:
+        var(--accent);
+
+    color:
+        white;
+
+    padding:
+        5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   SELECTED NECKLACE
+   ============================================================ */
+
+.selected-panel {
+
+    display: grid;
+
+    grid-template-columns:
+        350px 1fr;
+
+    gap: 45px;
+
+    align-items: center;
+
+    background:
+        var(--text);
+
+    color:
+        white;
+
+    border-radius: 20px;
+
+    padding: 30px;
+
+    margin-bottom: 25px;
+}
+
+
+.selected-image-container {
+
+    height: 350px;
+
+    background:
+        #f5f2ed;
+
+    border-radius: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+.selected-image-container img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+.selected-info .section-label {
+
+    color:
+        #cba36c;
+}
+
+
+.selected-info h2 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 42px;
+
+    font-weight: 500;
+
+    margin-bottom: 12px;
+}
+
+
+.selected-info p {
+
+    color:
+        #c6c1bb;
+
+    line-height: 1.7;
+
+    max-width: 450px;
+
+    margin-bottom: 30px;
+}
+
+
+.recommend-button {
+
+    border: none;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--text);
+
+    padding:
+        15px 24px;
+
+    border-radius: 9px;
+
+    font-weight: 700;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.recommend-button:hover {
+
+    transform:
+        translateY(-2px);
+
+    background:
+        #f0ebe4;
+}
+
+
+.recommend-button span {
+
+    color:
+        var(--accent);
+
+    margin-right: 7px;
+}
+
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+
+.loading-panel {
+
+    text-align: center;
+
+    background:
+        white;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 20px;
+
+    padding: 55px;
+
+    margin-bottom: 25px;
+}
+
+
+.loading-spinner {
+
+    width: 45px;
+
+    height: 45px;
+
+    margin:
+        0 auto 20px;
+
+    border:
+        4px solid #e7e1d8;
+
+    border-top:
+        4px solid var(--accent);
+
+    border-radius: 50%;
+
+    animation:
+        spin 0.8s linear infinite;
+}
+
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+.loading-panel h3 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 24px;
+
+    margin-bottom: 8px;
+}
+
+
+.loading-panel p {
+
+    color:
+        var(--muted);
+}
+
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+
+.results-description {
+
+    color:
+        var(--muted);
+
+    margin:
+        -15px 0 30px 62px;
+
+    font-size: 14px;
+}
+
+
+.recommendations {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+
+.earring-card {
+
+    position: relative;
+
+    background:
+        #faf9f7;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.earring-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0,0,0,0.08);
+}
+
+
+.earring-image-wrapper {
+
+    height: 300px;
+
+    background:
+        white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.earring-card img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+.rank-badge {
+
+    position: absolute;
+
+    top: 14px;
+
+    left: 14px;
+
+    background:
+        var(--text);
+
+    color:
+        white;
+
+    padding:
+        7px 11px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+.earring-info {
+
+    padding: 18px;
+}
+
+
+.earring-info h3 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 22px;
+
+    font-weight: 500;
+}
+
+
+.match-score {
+
+    margin-top: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    font-size: 12px;
+
+    color:
+        var(--muted);
+}
+
+
+.score-value {
+
+    font-weight: 700;
+
+    color:
+        var(--accent);
+}
+
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+
+.how-section {
+
+    padding:
+        60px 20px;
+
+    text-align: center;
+}
+
+
+.how-section > h2 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 38px;
+
+    font-weight: 500;
+
+    margin-bottom: 40px;
+}
+
+
+.how-section > h2 span {
+
+    color:
+        var(--accent);
+}
+
+
+.how-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+
+.how-card {
+
+    background:
+        white;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 16px;
+
+    padding: 30px;
+
+    text-align: left;
+}
+
+
+.how-icon {
+
+    color:
+        var(--accent);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    margin-bottom: 20px;
+}
+
+
+.how-card h3 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 23px;
+
+    margin-bottom: 8px;
+}
+
+
+.how-card p {
+
+    color:
+        var(--muted);
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+/* ============================================================
+   ERROR
+   ============================================================ */
+
+.error-message {
+
+    padding: 16px 20px;
+
+    background:
+        #fff0f0;
+
+    color:
+        #9b3434;
+
+    border:
+        1px solid #f0caca;
+
+    border-radius: 10px;
+
+    margin-bottom: 25px;
+
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+footer {
+
+    margin-top: 30px;
+
+    padding:
+        35px;
+
+    text-align: center;
+
+    border-top:
+        1px solid var(--border);
+
+    color:
+        var(--muted);
+}
+
+
+.footer-brand {
+
+    font-weight: 700;
+
+    color:
+        var(--text);
+
+    margin-bottom: 6px;
+}
+
+
+footer p {
+
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+
+.hidden {
+
+    display: none !important;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 950px) {
+
+    .necklace-grid {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+    .selected-panel {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .selected-image-container {
+
+        max-width: 400px;
+
+        width: 100%;
+
+        margin: auto;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .navbar {
+
+        padding: 0 20px;
+    }
+
+    .nav-status {
+
+        display: none;
+    }
+
+    .hero {
+
+        padding:
+            60px 20px;
+    }
+
+    .panel,
+    .results-panel {
+
+        padding: 20px;
+    }
+
+    .necklace-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .necklace-card img {
+
+        height: 150px;
+    }
+
+    .recommendations {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .how-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+}

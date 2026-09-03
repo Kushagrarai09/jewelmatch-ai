@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>JewelMatch AI</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+         ===================================================== -->
+
+    <nav class="navbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ✦
+            </div>
+
+            <div>
+
+                <div class="brand-name">
+                    JewelMatch
+                </div>
+
+                <div class="brand-subtitle">
+                    AI JEWELLERY STYLING
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav-status">
+
+            <span class="status-dot"></span>
+
+            AI Matching Active
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <header class="hero">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                INTELLIGENT JEWELLERY MATCHING
+            </div>
+
+            <h1>
+                Find the perfect
+                <span>earring match.</span>
+            </h1>
+
+            <p>
+                Select a necklace from our collection and let
+                AI discover the earrings that complement it best.
+            </p>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="main-container">
+
+
+        <!-- =================================================
+             STEP 1 — SELECT NECKLACE
+             ================================================= -->
+
+        <section class="panel">
+
+            <div class="section-header">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <div>
+
+                    <div class="section-label">
+                        CHOOSE YOUR PIECE
+                    </div>
+
+                    <h2>
+                        Select a Necklace
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- IMPORTANT:
+                 This ID appears ONLY ONCE
+            -->
+
+            <div
+                id="necklaceGrid"
+                class="necklace-grid"
+            ></div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SELECTED NECKLACE
+             ================================================= -->
+
+        <section
+            id="selectedPanel"
+            class="selected-panel hidden"
+        >
+
+            <div class="selected-image-container">
+
+                <img
+                    id="selectedNecklace"
+                    src=""
+                    alt="Selected necklace"
+                >
+
+            </div>
+
+
+            <div class="selected-info">
+
+                <div class="section-label">
+                    SELECTED NECKLACE
+                </div>
+
+                <h2 id="selectedName">
+                    Necklace
+                </h2>
+
+                <p>
+                    Your selected necklace is ready.
+                    Let our AI analyze the jewellery collection
+                    and find the best matching earrings.
+                </p>
+
+
+                <button
+                    id="recommendButton"
+                    class="recommend-button"
+                >
+
+                    <span>✦</span>
+
+                    Find Matching Earrings
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             LOADING
+             ================================================= -->
+
+        <section
+            id="loading"
+            class="loading-panel hidden"
+        >
+
+            <div class="loading-spinner"></div>
+
+            <h3>
+                Finding your perfect match
+            </h3>
+
+            <p>
+                AI is comparing your necklace against
+                our earring collection...
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ERROR
+             ================================================= -->
+
+        <div
+            id="errorMessage"
+            class="error-message hidden"
+        ></div>
+
+
+
+        <!-- =================================================
+             STEP 2 — RESULTS
+             ================================================= -->
+
+        <section
+            id="resultsSection"
+            class="results-panel hidden"
+        >
+
+            <div class="section-header">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <div>
+
+                    <div class="section-label">
+                        AI RECOMMENDATIONS
+                    </div>
+
+                    <h2>
+                        Your Perfect Matches
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <p class="results-description">
+
+                Ranked by visual similarity using
+                CLIP image embeddings.
+
+            </p>
+
+
+            <div
+                id="recommendations"
+                class="recommendations"
+            ></div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             HOW IT WORKS
+             ================================================= -->
+
+        <section class="how-section">
+
+            <div class="section-label">
+                HOW IT WORKS
+            </div>
+
+            <h2>
+                Intelligent matching,
+                <span>made simple.</span>
+            </h2>
+
+
+            <div class="how-grid">
+
+
+                <div class="how-card">
+
+                    <div class="how-icon">
+                        01
+                    </div>
+
+                    <h3>
+                        Select
+                    </h3>
+
+                    <p>
+                        Choose a necklace from the
+                        jewellery inventory.
+                    </p>
+
+                </div>
+
+
+                <div class="how-card">
+
+                    <div class="how-icon">
+                        02
+                    </div>
+
+                    <h3>
+                        Analyze
+                    </h3>
+
+                    <p>
+                        CLIP converts the jewellery image
+                        into a visual embedding.
+                    </p>
+
+                </div>
+
+
+                <div class="how-card">
+
+                    <div class="how-icon">
+                        03
+                    </div>
+
+                    <h3>
+                        Match
+                    </h3>
+
+                    <p>
+                        Cosine similarity ranks the closest
+                        earrings from the inventory.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer>
+
+        <div class="footer-brand">
+            ✦ JewelMatch AI
+        </div>
+
+        <p>
+            Visual jewellery recommendation prototype
+        </p>
+
+    </footer>
+
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
