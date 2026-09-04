@@ -162,7 +162,6 @@ async function loadNecklaces() {
                     src="${API_URL}/images/${filename}"
                     alt="Necklace ${index + 1}"
                     class="necklace-image"
-                    loading="lazy"
                 >
 
             </div>
