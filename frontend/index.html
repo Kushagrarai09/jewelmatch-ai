@@ -80,8 +80,9 @@
             </h1>
 
             <p>
-                Select a necklace from our collection and let
-                AI discover the earrings that complement it best.
+                Select a necklace from our collection or upload
+                your own test image and let AI discover the
+                earrings that complement it best.
             </p>
 
         </div>
@@ -98,40 +99,115 @@
 
 
         <!-- =================================================
-             STEP 1 — SELECT NECKLACE
+             INPUT OPTIONS
              ================================================= -->
 
-        <section class="panel">
+        <section class="input-options">
 
-            <div class="section-header">
 
-                <div class="step-number">
-                    01
+            <!-- =============================================
+                 OPTION 1 — SELECT FROM INVENTORY
+                 ============================================= -->
+
+            <div class="input-option">
+
+                <div class="section-label">
+                    OPTION 01
                 </div>
 
-                <div>
+                <h2>
+                    Select a Necklace
+                </h2>
 
-                    <div class="section-label">
-                        CHOOSE YOUR PIECE
-                    </div>
+                <p>
+                    Choose a necklace from the provided
+                    jewellery inventory.
+                </p>
 
-                    <h2>
-                        Select a Necklace
-                    </h2>
 
-                </div>
+                <!-- IMPORTANT:
+                     This ID appears ONLY ONCE
+                -->
+
+                <div
+                    id="necklaceGrid"
+                    class="necklace-grid"
+                ></div>
 
             </div>
 
 
-            <!-- IMPORTANT:
-                 This ID appears ONLY ONCE
-            -->
 
-            <div
-                id="necklaceGrid"
-                class="necklace-grid"
-            ></div>
+            <!-- =============================================
+                 OPTION 2 — UPLOAD TEST IMAGE
+                 ============================================= -->
+
+            <div class="input-option upload-option">
+
+                <div class="section-label">
+                    OPTION 02
+                </div>
+
+                <h2>
+                    Upload Test Image
+                </h2>
+
+                <p>
+                    Upload your own necklace image to find
+                    matching earrings from our inventory.
+                </p>
+
+
+                <!-- Upload button -->
+
+                <label
+                    for="testImageInput"
+                    class="upload-button"
+                >
+
+                    <span>↑</span>
+
+                    Choose Image
+
+                </label>
+
+
+                <!-- File input -->
+
+                <input
+                    type="file"
+                    id="testImageInput"
+                    accept="image/*"
+                    hidden
+                >
+
+
+                <!-- Upload preview -->
+
+                <div
+                    id="uploadPreviewContainer"
+                    class="upload-preview-container"
+                >
+
+                    <img
+                        id="uploadedPreview"
+                        class="uploaded-preview"
+                        alt="Uploaded necklace preview"
+                    >
+
+                    <p id="uploadPlaceholder">
+                        Your uploaded necklace image
+                        will appear here.
+                    </p>
+
+                </div>
+
+
+                <p class="upload-note">
+                    Supported image formats: JPG, JPEG, PNG, WEBP
+                </p>
+
+            </div>
 
 
         </section>
@@ -174,21 +250,73 @@
                     and find the best matching earrings.
                 </p>
 
+            </div>
 
-                <button
-                    id="recommendButton"
-                    class="recommend-button"
+        </section>
+
+
+
+        <!-- =================================================
+             UPLOADED IMAGE ACTION INFO
+             ================================================= -->
+
+        <section
+            id="uploadSelectedPanel"
+            class="selected-panel upload-selected-panel hidden"
+        >
+
+            <div class="selected-image-container">
+
+                <img
+                    id="uploadedSelectedImage"
+                    src=""
+                    alt="Uploaded necklace"
                 >
 
-                    <span>✦</span>
+            </div>
 
-                    Find Matching Earrings
 
-                </button>
+            <div class="selected-info">
+
+                <div class="section-label">
+                    TEST IMAGE
+                </div>
+
+                <h2>
+                    Uploaded Necklace
+                </h2>
+
+                <p>
+                    Your uploaded image is ready.
+                    Let our AI find the closest matching
+                    earrings from the provided inventory.
+                </p>
 
             </div>
 
         </section>
+
+
+
+        <!-- =================================================
+             RECOMMEND BUTTON
+             ================================================= -->
+
+        <div class="recommend-action">
+
+            <button
+                id="recommendButton"
+                class="recommend-button"
+                type="button"
+            >
+
+                <span>✦</span>
+
+                Find Matching Earrings
+
+            </button>
+
+        </div>
 
 
 
@@ -208,7 +336,7 @@
             </h3>
 
             <p>
-                AI is comparing your necklace against
+                AI is comparing your image against
                 our earring collection...
             </p>
 
@@ -223,6 +351,7 @@
         <div
             id="errorMessage"
             class="error-message hidden"
+            role="alert"
         ></div>
 
 
@@ -301,12 +430,12 @@
                     </div>
 
                     <h3>
-                        Select
+                        Select or Upload
                     </h3>
 
                     <p>
-                        Choose a necklace from the
-                        jewellery inventory.
+                        Choose a necklace from the inventory
+                        or upload your own test image.
                     </p>
 
                 </div>
@@ -323,7 +452,7 @@
                     </h3>
 
                     <p>
-                        CLIP converts the jewellery image
+                        CLIP converts the necklace image
                         into a visual embedding.
                     </p>
 
@@ -342,7 +471,7 @@
 
                     <p>
                         Cosine similarity ranks the closest
-                        earrings from the inventory.
+                        earrings from the provided inventory.
                     </p>
 
                 </div>
@@ -375,7 +504,12 @@
 
 
 
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
     <script src="app.js"></script>
+
 
 </body>
 

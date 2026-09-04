@@ -487,6 +487,145 @@ body {
 }
 
 
+/* ============================================================
+   INPUT OPTIONS
+   ============================================================ */
+
+.input-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+
+/* ============================================================
+   UPLOAD TEST IMAGE
+   ============================================================ */
+
+.upload-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 35px;
+}
+
+.upload-card h3 {
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.upload-card > p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+
+/* Upload button */
+
+.upload-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: var(--text);
+    color: white;
+
+    padding: 13px 20px;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.upload-button:hover {
+    transform: translateY(-2px);
+    background: var(--accent-dark);
+}
+
+.upload-button span {
+    font-size: 20px;
+    line-height: 1;
+}
+
+
+/* Upload preview */
+
+.upload-preview-container {
+    width: 100%;
+    height: 260px;
+
+    margin-top: 20px;
+
+    background: #faf9f7;
+
+    border: 1px dashed var(--border);
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    text-align: center;
+}
+
+.uploaded-preview {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: none;
+}
+
+.upload-preview-container p {
+    color: var(--muted);
+    font-size: 13px;
+    padding: 20px;
+}
+
+.upload-note {
+    margin-top: 12px !important;
+    margin-bottom: 0 !important;
+
+    font-size: 11px !important;
+    color: var(--muted);
+}
+
+
+/* ============================================================
+   SHARED RECOMMEND ACTION
+   ============================================================ */
+
+.recommend-action {
+    display: flex;
+    justify-content: center;
+
+    margin-bottom: 25px;
+}
+
+.recommend-action .recommend-button {
+    min-width: 260px;
+}
 .selected-image-container {
 
     height: 350px;
@@ -1008,7 +1147,10 @@ footer p {
         grid-template-columns:
             repeat(3, 1fr);
     }
-
+    
+    .input-options {
+        grid-template-columns: 1fr;
+    }
     .selected-panel {
 
         grid-template-columns:
