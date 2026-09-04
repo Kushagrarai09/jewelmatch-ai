@@ -1,3 +1,8 @@
+// ============================================================
+// JEWELMATCH AI - FRONTEND
+// ============================================================
+
+// Railway backend
 const API_URL = "https://jewelmatch-ai-production.up.railway.app";
 
 
@@ -15,274 +20,282 @@ let resultsSection;
 let recommendationsContainer;
 let errorMessage;
 
+// Upload elements
+let testImageInput;
+let uploadedPreview;
+let uploadPlaceholder;
+
 
 // ============================================================
-// STATE
+// APPLICATION STATE
 // ============================================================
 
 let selectedNecklaceFile = null;
 
+let uploadedTestFile = null;
+let uploadedPreviewUrl = null;
+
 
 // ============================================================
-// INITIALIZE DOM
+// INITIALIZE APPLICATION
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Get DOM elements
-    necklaceGrid =
-        document.getElementById("necklaceGrid");
+    // Inventory elements
+    necklaceGrid = document.getElementById("necklaceGrid");
+    selectedPanel = document.getElementById("selectedPanel");
+    selectedNecklace = document.getElementById("selectedNecklace");
+    selectedName = document.getElementById("selectedName");
 
-    selectedPanel =
-        document.getElementById("selectedPanel");
+    // Recommendation elements
+    recommendButton = document.getElementById("recommendButton");
+    loading = document.getElementById("loading");
+    resultsSection = document.getElementById("resultsSection");
 
-    selectedNecklace =
-        document.getElementById("selectedNecklace");
-
-    selectedName =
-        document.getElementById("selectedName");
-
-    recommendButton =
-        document.getElementById("recommendButton");
-
-    loading =
-        document.getElementById("loading");
-
-    resultsSection =
-        document.getElementById("resultsSection");
-
+    // Support either ID if your HTML uses one of them
     recommendationsContainer =
-        document.getElementById("recommendations");
+        document.getElementById("recommendations") ||
+        document.getElementById("recommendationsContainer");
 
-    errorMessage =
-        document.getElementById("errorMessage");
+    errorMessage = document.getElementById("errorMessage");
+
+    // Upload elements
+    testImageInput = document.getElementById("testImageInput");
+    uploadedPreview = document.getElementById("uploadedPreview");
+    uploadPlaceholder = document.getElementById("uploadPlaceholder");
 
 
+    // --------------------------------------------------------
     // Check required elements
+    // --------------------------------------------------------
+
     if (!necklaceGrid) {
-        console.error("necklaceGrid element not found.");
-        return;
-    }
-
-    if (!selectedPanel) {
-        console.error("selectedPanel element not found.");
-        return;
-    }
-
-    if (!selectedNecklace) {
-        console.error("selectedNecklace element not found.");
-        return;
-    }
-
-    if (!selectedName) {
-        console.error("selectedName element not found.");
-        return;
+        console.error("Missing #necklaceGrid");
     }
 
     if (!recommendButton) {
-        console.error("recommendButton element not found.");
-        return;
+        console.error("Missing #recommendButton");
+    }
+
+    if (!resultsSection) {
+        console.error("Missing #resultsSection");
+    }
+
+    if (!recommendationsContainer) {
+        console.error(
+            "Missing #recommendations or #recommendationsContainer"
+        );
     }
 
 
-    // Button event
-    recommendButton.addEventListener(
-        "click",
-        recommendEarrings
-    );
+    // --------------------------------------------------------
+    // Recommendation button
+    // --------------------------------------------------------
+
+    if (recommendButton) {
+        recommendButton.addEventListener(
+            "click",
+            recommendEarrings
+        );
+    }
 
 
-    // Load necklace inventory
+    // --------------------------------------------------------
+    // Upload test image
+    // --------------------------------------------------------
+
+    if (testImageInput) {
+        testImageInput.addEventListener(
+            "change",
+            handleTestImageUpload
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // Load inventory
+    // --------------------------------------------------------
+
     loadNecklaces();
 
 });
 
 
 // ============================================================
-// SHOW ERROR
+// LOAD NECKLACE INVENTORY
 // ============================================================
 
-function showError(message) {
+async function loadNecklaces() {
 
-    if (!errorMessage) {
-        console.error(message);
+    if (!necklaceGrid) {
         return;
     }
 
-    errorMessage.textContent = message;
-
-    errorMessage.classList.remove("hidden");
-}
-
-
-// ============================================================
-// HIDE ERROR
-// ============================================================
-
-function hideError() {
-
-    if (!errorMessage) {
-        return;
-    }
-
-    errorMessage.classList.add("hidden");
-}
-
-
-// ============================================================
-// LOAD NECKLACES
-// ============================================================
-
-function loadNecklaces() {
-
-    console.log("Loading necklace inventory...");
-
+    // Clear existing cards
     necklaceGrid.innerHTML = "";
 
 
-    // Dataset contains 5 necklaces
-    for (let i = 1; i <= 5; i++) {
-
-        const filename = `Nck_${i}.jpg`;
-
-
-        // ----------------------------------------------------
-        // Create card
-        // ----------------------------------------------------
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "necklace-card";
-
-        card.dataset.filename =
-            filename;
+    // The assignment contains 5 necklaces
+    const necklaces = [
+        "Nck_1.jpg",
+        "Nck_2.jpg",
+        "Nck_3.jpg",
+        "Nck_4.jpg",
+        "Nck_5.jpg"
+    ];
 
 
-        // ----------------------------------------------------
-        // Card HTML
-        // ----------------------------------------------------
+    necklaces.forEach((filename, index) => {
+
+        const card = document.createElement("div");
+
+        card.className = "necklace-card";
+
+        card.dataset.filename = filename;
+
 
         card.innerHTML = `
-
             <div class="necklace-image-wrapper">
 
                 <img
                     src="${API_URL}/images/${filename}"
-                    alt="Necklace ${i}"
+                    alt="Necklace ${index + 1}"
                     class="necklace-image"
                     loading="lazy"
                 >
 
-                <div class="necklace-number">
-                    0${i}
-                </div>
-
             </div>
-
 
             <div class="necklace-card-info">
 
-                <strong>
-                    Necklace ${i}
-                </strong>
+                <h3>Necklace ${index + 1}</h3>
 
-                <span>
-                    Jewellery Collection
-                </span>
+                <p>Inventory Item</p>
 
             </div>
-
         `;
 
 
-        // ----------------------------------------------------
-        // Image error handling
-        // ----------------------------------------------------
-
-        const image =
-            card.querySelector("img");
-
-        image.addEventListener("error", () => {
-
-            console.error(
-                `Could not load image: ${filename}`
-            );
-
-            image.alt =
-                `Unable to load Necklace ${i}`;
-
-        });
-
-
-        // ----------------------------------------------------
-        // Click event
-        // ----------------------------------------------------
-
+        // Click handler
         card.addEventListener("click", () => {
 
             selectNecklace(
                 filename,
                 card,
-                i
+                index + 1
             );
 
         });
 
 
-        // ----------------------------------------------------
-        // Add card to grid
-        // ----------------------------------------------------
+        // Image error handling
+        const image = card.querySelector("img");
+
+        if (image) {
+
+            image.addEventListener("error", () => {
+
+                console.error(
+                    "Could not load necklace image:",
+                    filename
+                );
+
+                image.alt =
+                    `Unable to load ${filename}`;
+
+            });
+
+        }
+
 
         necklaceGrid.appendChild(card);
 
-    }
+    });
 
 
     console.log(
-        "5 necklaces loaded successfully."
+        "Necklace inventory loaded:",
+        necklaces
     );
 }
 
 
 // ============================================================
-// SELECT NECKLACE
+// SELECT INVENTORY NECKLACE
 // ============================================================
 
-function selectNecklace(
-    filename,
-    card,
-    number
-) {
+function selectNecklace(filename, card, number) {
 
     console.log(
-        "Selected necklace:",
+        "Selected inventory necklace:",
         filename
     );
 
 
-    hideError();
+    // --------------------------------------------------------
+    // Set selected inventory item
+    // --------------------------------------------------------
+
+    selectedNecklaceFile = filename;
 
 
     // --------------------------------------------------------
-    // Remove previous selection
+    // Clear uploaded-image mode
+    // --------------------------------------------------------
+
+    uploadedTestFile = null;
+
+
+    if (testImageInput) {
+        testImageInput.value = "";
+    }
+
+
+    // Remove previous object URL
+    if (uploadedPreviewUrl) {
+
+        URL.revokeObjectURL(
+            uploadedPreviewUrl
+        );
+
+        uploadedPreviewUrl = null;
+
+    }
+
+
+    // Clear upload preview
+    if (uploadedPreview) {
+
+        uploadedPreview.removeAttribute("src");
+
+        uploadedPreview.style.display = "none";
+
+    }
+
+
+    if (uploadPlaceholder) {
+
+        uploadPlaceholder.style.display =
+            "block";
+
+    }
+
+
+    // --------------------------------------------------------
+    // Remove previous selected states
     // --------------------------------------------------------
 
     document
         .querySelectorAll(".necklace-card")
         .forEach(item => {
 
-            item.classList.remove(
-                "selected"
-            );
-
+            item.classList.remove("selected");
 
             const badge =
                 item.querySelector(
                     ".selected-badge"
                 );
-
 
             if (badge) {
                 badge.remove();
@@ -291,75 +304,208 @@ function selectNecklace(
         });
 
 
-    // --------------------------------------------------------
-    // Select current card
-    // --------------------------------------------------------
-
-    card.classList.add(
-        "selected"
-    );
+    // Mark current card selected
+    card.classList.add("selected");
 
 
-    // --------------------------------------------------------
     // Add selected badge
-    // --------------------------------------------------------
-
     const badge =
         document.createElement("div");
 
-    badge.className =
-        "selected-badge";
+    badge.className = "selected-badge";
 
-    badge.textContent =
-        "SELECTED";
+    badge.textContent = "✓ Selected";
 
     card.appendChild(badge);
 
 
     // --------------------------------------------------------
-    // Store selected filename
+    // Show selected necklace panel
     // --------------------------------------------------------
 
-    selectedNecklaceFile =
-        filename;
+    if (selectedPanel) {
+
+        selectedPanel.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    if (selectedNecklace) {
+
+        selectedNecklace.src =
+            `${API_URL}/images/${filename}`;
+
+        selectedNecklace.alt =
+            `Selected Necklace ${number}`;
+
+    }
+
+
+    if (selectedName) {
+
+        selectedName.textContent =
+            `Necklace ${number}`;
+
+    }
 
 
     // --------------------------------------------------------
-    // Show selected necklace
+    // Clear old recommendations
     // --------------------------------------------------------
 
-    selectedNecklace.src =
-        `${API_URL}/images/${filename}`;
+    clearResults();
 
-    selectedNecklace.alt =
-        `Selected Necklace ${number}`;
+    hideError();
+
+}
 
 
-    selectedName.textContent =
-        `Necklace ${number}`;
+// ============================================================
+// HANDLE UPLOADED TEST IMAGE
+// ============================================================
+
+function handleTestImageUpload(event) {
+
+    const file =
+        event.target.files[0];
+
+
+    if (!file) {
+        return;
+    }
 
 
     // --------------------------------------------------------
-    // Show selected panel
+    // Validate image
     // --------------------------------------------------------
 
-    selectedPanel.classList.remove(
-        "hidden"
+    if (!file.type.startsWith("image/")) {
+
+        showError(
+            "Please upload a valid image file."
+        );
+
+        event.target.value = "";
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // Maximum file size: 10 MB
+    // --------------------------------------------------------
+
+    if (
+        file.size >
+        10 * 1024 * 1024
+    ) {
+
+        showError(
+            "Please upload an image smaller than 10 MB."
+        );
+
+        event.target.value = "";
+
+        return;
+    }
+
+
+    hideError();
+
+
+    // --------------------------------------------------------
+    // Store uploaded file
+    // --------------------------------------------------------
+
+    uploadedTestFile = file;
+
+
+    // --------------------------------------------------------
+    // Clear inventory selection
+    // --------------------------------------------------------
+
+    selectedNecklaceFile = null;
+
+
+    document
+        .querySelectorAll(".necklace-card")
+        .forEach(card => {
+
+            card.classList.remove(
+                "selected"
+            );
+
+            const badge =
+                card.querySelector(
+                    ".selected-badge"
+                );
+
+            if (badge) {
+                badge.remove();
+            }
+
+        });
+
+
+    // Hide inventory selected panel
+    if (selectedPanel) {
+
+        selectedPanel.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // Create image preview
+    // --------------------------------------------------------
+
+    if (uploadedPreviewUrl) {
+
+        URL.revokeObjectURL(
+            uploadedPreviewUrl
+        );
+
+    }
+
+
+    uploadedPreviewUrl =
+        URL.createObjectURL(file);
+
+
+    if (uploadedPreview) {
+
+        uploadedPreview.src =
+            uploadedPreviewUrl;
+
+        uploadedPreview.style.display =
+            "block";
+
+    }
+
+
+    if (uploadPlaceholder) {
+
+        uploadPlaceholder.style.display =
+            "none";
+
+    }
+
+
+    // --------------------------------------------------------
+    // Clear previous results
+    // --------------------------------------------------------
+
+    clearResults();
+
+
+    console.log(
+        "Test image uploaded:",
+        file.name
     );
-
-
-    // --------------------------------------------------------
-    // Hide previous recommendations
-    // --------------------------------------------------------
-
-    resultsSection.classList.add(
-        "hidden"
-    );
-
-
-    // Clear previous recommendations
-    recommendationsContainer.innerHTML =
-        "";
 
 }
 
@@ -370,9 +516,49 @@ function selectNecklace(
 
 async function recommendEarrings() {
 
+    hideError();
+
+
     // --------------------------------------------------------
-    // Validate selection
+    // Upload mode
     // --------------------------------------------------------
+
+    if (uploadedTestFile) {
+
+        await recommendFromUpload();
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // Inventory mode
+    // --------------------------------------------------------
+
+    if (selectedNecklaceFile) {
+
+        await recommendFromInventory();
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // Nothing selected
+    // --------------------------------------------------------
+
+    showError(
+        "Please select a necklace or upload a test image."
+    );
+
+}
+
+
+// ============================================================
+// RECOMMEND FROM INVENTORY
+// ============================================================
+
+async function recommendFromInventory() {
 
     if (!selectedNecklaceFile) {
 
@@ -385,50 +571,24 @@ async function recommendEarrings() {
 
 
     console.log(
-        "Requesting recommendations for:",
+        "Requesting inventory recommendation:",
         selectedNecklaceFile
     );
 
 
-    hideError();
-
-
-    // --------------------------------------------------------
-    // Show loading
-    // --------------------------------------------------------
-
-    loading.classList.remove(
-        "hidden"
-    );
-
-    resultsSection.classList.add(
-        "hidden"
-    );
-
-
-    recommendButton.disabled =
-        true;
-
-
-    recommendButton.innerHTML =
-        `
-            <span>✦</span>
-            Finding Matches...
-        `;
+    setLoadingState(true);
 
 
     try {
 
-        // ----------------------------------------------------
-        // Send filename to FastAPI
-        // ----------------------------------------------------
-
         const url =
-            `${API_URL}/recommend-by-filename?filename=${encodeURIComponent(selectedNecklaceFile)}`;
+            `${API_URL}/recommend-by-filename?filename=${encodeURIComponent(
+                selectedNecklaceFile
+            )}`;
 
 
         console.log(
-            "API request:",
+            "Inventory API request:",
             url
         );
 
@@ -442,63 +602,22 @@ async function recommendEarrings() {
             );
 
 
-        // ----------------------------------------------------
-        // HTTP error
-        // ----------------------------------------------------
+        const data =
+            await parseApiResponse(
+                response
+            );
+
 
         if (!response.ok) {
 
-            let errorMessageText =
-                `Server error: ${response.status}`;
-
-
-            try {
-
-                const errorData =
-                    await response.json();
-
-
-                if (errorData.detail) {
-
-                    errorMessageText =
-                        errorData.detail;
-
-                }
-
-            } catch (parseError) {
-
-                console.error(
-                    "Could not parse server error.",
-                    parseError
-                );
-
-            }
-
-
             throw new Error(
-                errorMessageText
+                data.detail ||
+                data.error ||
+                `Server error: ${response.status}`
             );
 
         }
 
-
-        // ----------------------------------------------------
-        // Parse JSON
-        // ----------------------------------------------------
-
-        const data =
-            await response.json();
-
-
-        console.log(
-            "Recommendation response:",
-            data
-        );
-
-
-        // ----------------------------------------------------
-        // Validate response
-        // ----------------------------------------------------
 
         if (!data.success) {
 
@@ -510,9 +629,11 @@ async function recommendEarrings() {
         }
 
 
-        // ----------------------------------------------------
-        // Display recommendations
-        // ----------------------------------------------------
+        console.log(
+            "Inventory recommendation response:",
+            data
+        );
+
 
         displayRecommendations(
             data.recommendations
@@ -522,55 +643,177 @@ async function recommendEarrings() {
     } catch (error) {
 
         console.error(
-            "Recommendation error:",
+            "Inventory recommendation error:",
             error
         );
 
 
-        if (
-            error.message ===
-            "Failed to fetch"
-        ) {
+        handleApiError(error);
 
-            showError(
-                "Could not connect to the AI server. Make sure FastAPI is running on port 8000."
+    } finally {
+
+        setLoadingState(false);
+
+    }
+
+}
+
+
+// ============================================================
+// RECOMMEND FROM UPLOADED IMAGE
+// ============================================================
+
+async function recommendFromUpload() {
+
+    if (!uploadedTestFile) {
+
+        showError(
+            "Please upload a test image first."
+        );
+
+        return;
+    }
+
+
+    console.log(
+        "Requesting recommendation for uploaded image:",
+        uploadedTestFile.name
+    );
+
+
+    setLoadingState(true);
+
+
+    try {
+
+        // ----------------------------------------------------
+        // FormData
+        // ----------------------------------------------------
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "file",
+            uploadedTestFile
+        );
+
+
+        const url =
+            `${API_URL}/recommend-by-upload`;
+
+
+        console.log(
+            "Upload API request:",
+            url
+        );
+
+
+        // ----------------------------------------------------
+        // Send image to FastAPI
+        // ----------------------------------------------------
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method: "POST",
+                    body: formData
+                }
             );
 
-        } else {
 
-            showError(
-                error.message
+        const data =
+            await parseApiResponse(
+                response
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                data.error ||
+                `Server error: ${response.status}`
             );
 
         }
 
 
-    } finally {
+        if (!data.success) {
 
-        // ----------------------------------------------------
-        // Hide loading
-        // ----------------------------------------------------
+            throw new Error(
+                data.error ||
+                "Recommendation failed."
+            );
 
-        loading.classList.add(
-            "hidden"
+        }
+
+
+        console.log(
+            "Upload recommendation response:",
+            data
         );
 
 
-        // ----------------------------------------------------
-        // Re-enable button
-        // ----------------------------------------------------
-
-        recommendButton.disabled =
-            false;
+        displayRecommendations(
+            data.recommendations
+        );
 
 
-        recommendButton.innerHTML =
-            `
-                <span>✦</span>
-                Find Matching Earrings
-            `;
+    } catch (error) {
+
+        console.error(
+            "Upload recommendation error:",
+            error
+        );
+
+
+        handleApiError(error);
+
+    } finally {
+
+        setLoadingState(false);
 
     }
+
+}
+
+
+// ============================================================
+// PARSE API RESPONSE
+// ============================================================
+
+async function parseApiResponse(response) {
+
+    const contentType =
+        response.headers.get(
+            "content-type"
+        );
+
+
+    if (
+        contentType &&
+        contentType.includes(
+            "application/json"
+        )
+    ) {
+
+        return await response.json();
+
+    }
+
+
+    const text =
+        await response.text();
+
+
+    return {
+        error:
+            text ||
+            "Unexpected server response."
+    };
 
 }
 
@@ -579,21 +822,21 @@ async function recommendEarrings() {
 // DISPLAY RECOMMENDATIONS
 // ============================================================
 
-function displayRecommendations(
-    recommendations
-) {
+function displayRecommendations(items) {
 
-    recommendationsContainer.innerHTML =
-        "";
+    if (!recommendationsContainer) {
 
+        console.error(
+            "Recommendation container not found."
+        );
 
-    // --------------------------------------------------------
-    // Validate recommendations
-    // --------------------------------------------------------
+        return;
+    }
+
 
     if (
-        !recommendations ||
-        recommendations.length === 0
+        !items ||
+        items.length === 0
     ) {
 
         showError(
@@ -604,179 +847,122 @@ function displayRecommendations(
     }
 
 
-    console.log(
-        `Displaying ${recommendations.length} recommendations.`
-    );
+    // Clear previous recommendations
+    recommendationsContainer.innerHTML = "";
 
 
     // --------------------------------------------------------
-    // Create recommendation cards
+    // Display each recommendation
     // --------------------------------------------------------
 
-    recommendations.forEach(
+    items.forEach(
         (item, index) => {
 
             const card =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             card.className =
-                "earring-card";
+    "earring-card";
 
 
-            // ------------------------------------------------
-            // Rank badge
-            // ------------------------------------------------
-
-            const rank =
-                document.createElement("div");
-
-            rank.className =
-                "rank-badge";
-
-            rank.textContent =
-                `MATCH ${index + 1}`;
+            // Similarity percentage
+            let similarityText = "";
 
 
-            // ------------------------------------------------
-            // Image wrapper
-            // ------------------------------------------------
+            if (
+                typeof item.similarity ===
+                "number"
+            ) {
 
-            const imageWrapper =
-                document.createElement("div");
+                similarityText =
+                    `${(
+                        item.similarity * 100
+                    ).toFixed(1)}% match`;
 
-            imageWrapper.className =
-                "earring-image-wrapper";
+            }
 
 
-            // ------------------------------------------------
-            // Earring image
-            // ------------------------------------------------
+            // Image URL
+            let imageUrl =
+                item.image_url || "";
 
+
+            // Backend normally returns:
+            // /images/Ear_1.jpg
+            //
+            // Therefore add API_URL before it.
+
+            if (
+                imageUrl &&
+                imageUrl.startsWith("/")
+            ) {
+
+                imageUrl =
+                    `${API_URL}${imageUrl}`;
+
+            }
+
+
+            card.innerHTML = `
+
+                      <div class="earring-image-wrapper">
+                    <img
+                        src="${imageUrl}"
+                        alt="Matching Earring ${index + 1}"
+                        class="recommendation-image"
+                        loading="lazy"
+                    >
+
+                </div>
+
+                <div class="earring-info">
+                    <div class="recommendation-rank">
+                        #${index + 1}
+                    </div>
+
+                    <h3>
+                        ${formatEarringName(
+                            item.image_file,
+                            index
+                        )}
+                    </h3>
+
+                    <p class="match-score">
+                        ${similarityText}
+                    </p>
+
+                </div>
+            `;
+
+
+            // Image error handling
             const image =
-                document.createElement("img");
+                card.querySelector("img");
 
 
-            image.src =
-                `${API_URL}${item.image_url}`;
+            if (image) {
+
+                image.addEventListener(
+                    "error",
+                    () => {
+
+                        console.error(
+                            "Could not load recommendation image:",
+                            imageUrl
+                        );
+
+                    }
+                );
+
+            }
 
 
-            image.alt =
-                `Matching Earring ${index + 1}`;
-
-
-            image.loading =
-                "lazy";
-
-
-            image.addEventListener(
-                "error",
-                () => {
-
-                    console.error(
-                        "Could not load earring image:",
-                        item.image_url
-                    );
-
-                }
+            recommendationsContainer.appendChild(
+                card
             );
-
-
-            imageWrapper.appendChild(
-                image
-            );
-
-
-            // ------------------------------------------------
-            // Information
-            // ------------------------------------------------
-
-            const info =
-                document.createElement("div");
-
-            info.className =
-                "earring-info";
-
-
-            // Title
-            const title =
-                document.createElement("h3");
-
-            title.textContent =
-                item.id ||
-                `Earring ${index + 1}`;
-
-
-            // Match score
-            const score =
-                document.createElement("div");
-
-            score.className =
-                "match-score";
-
-
-            const scoreLabel =
-                document.createElement("span");
-
-            scoreLabel.textContent =
-                "Visual Match";
-
-
-            const scoreValue =
-                document.createElement("span");
-
-            scoreValue.className =
-                "score-value";
-
-
-            const similarity =
-                Number(item.similarity);
-
-
-            scoreValue.textContent =
-                `${(
-                    similarity * 100
-                ).toFixed(1)}%`;
-
-
-            score.appendChild(
-                scoreLabel
-            );
-
-            score.appendChild(
-                scoreValue
-            );
-
-
-            // Add information
-            info.appendChild(
-                title
-            );
-
-            info.appendChild(
-                score
-            );
-
-
-            // ------------------------------------------------
-            // Build card
-            // ------------------------------------------------
-
-            card.appendChild(
-                rank
-            );
-
-            card.appendChild(
-                imageWrapper
-            );
-
-            card.appendChild(
-                info
-            );
-
-
-            // Add to page
-            recommendationsContainer
-                .appendChild(card);
 
         }
     );
@@ -786,22 +972,270 @@ function displayRecommendations(
     // Show results section
     // --------------------------------------------------------
 
-    resultsSection.classList.remove(
+    if (resultsSection) {
+
+        resultsSection.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    // Scroll to results
+    setTimeout(() => {
+
+        if (resultsSection) {
+
+            resultsSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+    }, 100);
+
+
+    console.log(
+        "Displayed recommendations:",
+        items
+    );
+
+}
+
+
+// ============================================================
+// FORMAT EARRING NAME
+// ============================================================
+
+function formatEarringName(
+    filename,
+    index
+) {
+
+    if (!filename) {
+
+        return `Matching Earring ${index + 1}`;
+
+    }
+
+
+    // Ear_1.jpg -> Earring 1
+
+    const match =
+        filename.match(
+            /Ear_(\d+)/i
+        );
+
+
+    if (match) {
+
+        return `Earring ${match[1]}`;
+
+    }
+
+
+    return `Matching Earring ${index + 1}`;
+
+}
+
+
+// ============================================================
+// LOADING STATE
+// ============================================================
+
+function setLoadingState(isLoading) {
+
+    if (isLoading) {
+
+        if (loading) {
+
+            loading.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        if (resultsSection) {
+
+            resultsSection.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        if (recommendButton) {
+
+            recommendButton.disabled =
+                true;
+
+
+            recommendButton.innerHTML = `
+                <span>✦</span>
+                Finding Matches...
+            `;
+
+        }
+
+    } else {
+
+        if (loading) {
+
+            loading.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        if (recommendButton) {
+
+            recommendButton.disabled =
+                false;
+
+
+            recommendButton.innerHTML = `
+                <span>✦</span>
+                Find Matching Earrings
+            `;
+
+        }
+
+    }
+
+}
+
+
+// ============================================================
+// CLEAR RESULTS
+// ============================================================
+
+function clearResults() {
+
+    if (resultsSection) {
+
+        resultsSection.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (recommendationsContainer) {
+
+        recommendationsContainer.innerHTML =
+            "";
+
+    }
+
+}
+
+
+// ============================================================
+// SHOW ERROR
+// ============================================================
+
+function showError(message) {
+
+    if (!errorMessage) {
+
+        console.error(
+            "Error:",
+            message
+        );
+
+        return;
+    }
+
+
+    errorMessage.textContent =
+        message;
+
+
+    errorMessage.classList.remove(
         "hidden"
     );
 
 
-    // --------------------------------------------------------
-    // Scroll to results
-    // --------------------------------------------------------
-
-    setTimeout(() => {
-
-        resultsSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    }, 100);
+    // Scroll error into view if necessary
+    errorMessage.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
 
 }
+
+
+// ============================================================
+// HIDE ERROR
+// ============================================================
+
+function hideError() {
+
+    if (!errorMessage) {
+        return;
+    }
+
+
+    errorMessage.textContent = "";
+
+
+    errorMessage.classList.add(
+        "hidden"
+    );
+
+}
+
+
+// ============================================================
+// HANDLE API ERRORS
+// ============================================================
+
+function handleApiError(error) {
+
+    if (
+        error &&
+        (
+            error.message ===
+                "Failed to fetch" ||
+            error.name ===
+                "TypeError"
+        )
+    ) {
+
+        showError(
+            "Could not connect to the AI server. Please try again."
+        );
+
+        return;
+    }
+
+
+    showError(
+        error?.message ||
+        "Something went wrong while getting recommendations."
+    );
+
+}
+
+
+// ============================================================
+// CLEANUP OBJECT URL
+// ============================================================
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        if (uploadedPreviewUrl) {
+
+            URL.revokeObjectURL(
+                uploadedPreviewUrl
+            );
+
+        }
+
+    }
+);
