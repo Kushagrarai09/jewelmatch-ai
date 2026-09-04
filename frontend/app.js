@@ -701,7 +701,7 @@ async function recommendFromUpload() {
 
 
         const url =
-            `${API_URL}/recommend-by-upload`;
+            `${API_URL}/recommend`;
 
 
         console.log(
