@@ -9,14 +9,15 @@ recommender = JewelleryRecommender()
 
 print("\nTesting with Nck_1.jpg...")
 
-image = Image.open(
-    "../data/images/Nck_1.jpg"
-).convert("RGB")
+image_path = "../data/images/Nck_1.jpg"
 
-results = recommender.recommend(
-    image,
-    top_k=3
-)
+with Image.open(image_path) as image:
+    image = image.convert("RGB")
+
+    results = recommender.recommend(
+        image,
+        top_k=3
+    )
 
 print("\nRecommendations:")
 

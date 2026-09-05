@@ -1,19 +1,19 @@
+import gc
 import os
+
 import numpy as np
 import pandas as pd
 import torch
-
 from PIL import Image
 from transformers import CLIPModel, CLIPProcessor
+
+
+MODEL_NAME = "openai/clip-vit-base-patch32"
 
 
 class JewelleryRecommender:
 
     def __init__(self):
-
-        # ---------------------------------------------------------
-        # Project paths
-        # ---------------------------------------------------------
 
         BASE_DIR = os.path.dirname(
             os.path.dirname(os.path.abspath(__file__))
@@ -31,59 +31,55 @@ class JewelleryRecommender:
             "images"
         )
 
-        # ---------------------------------------------------------
-        # Load dataset
-        # ---------------------------------------------------------
-
         print("Loading dataset...")
 
-        self.df = pd.read_csv(self.csv_path)
+        df = pd.read_csv(self.csv_path)
 
-        # Keep only earrings for recommendations
-        self.earrings_df = self.df[
-            self.df["product_type"].str.lower() == "earrings"
+        self.earrings_df = df[
+            df["product_type"].str.lower() == "earrings"
         ].copy()
 
-        necklace_count = len(self.df) - len(self.earrings_df)
+        necklace_count = len(df) - len(self.earrings_df)
 
         print(
             f"Found {len(self.earrings_df)} earrings "
             f"and {necklace_count} necklaces."
         )
 
-        # ---------------------------------------------------------
-        # Select device
-        # ---------------------------------------------------------
+        # Free dataframe memory
+        del df
+        gc.collect()
 
-        self.device = (
-            "cuda"
-            if torch.cuda.is_available()
-            else "cpu"
-        )
+        # Railway runs on CPU
+        self.device = torch.device("cpu")
+
+        # Reduce CPU memory usage
+        torch.set_num_threads(1)
 
         print(f"Using device: {self.device}")
-
-        # ---------------------------------------------------------
-        # Load CLIP
-        # ---------------------------------------------------------
 
         print("Loading CLIP model...")
 
         self.processor = CLIPProcessor.from_pretrained(
-            "openai/clip-vit-base-patch32"
+            MODEL_NAME
         )
 
         self.model = CLIPModel.from_pretrained(
-            "openai/clip-vit-base-patch32"
-        ).to(self.device)
+            MODEL_NAME
+        )
 
+        self.model.to(self.device)
         self.model.eval()
+
+        # No training is required
+        for parameter in self.model.parameters():
+            parameter.requires_grad_(False)
 
         print("CLIP model loaded.")
 
-        # ---------------------------------------------------------
-        # Pre-compute embeddings for all earrings
-        # ---------------------------------------------------------
+        self._create_earring_embeddings()
+
+    def _create_earring_embeddings(self):
 
         self.earring_embeddings = []
 
@@ -100,96 +96,79 @@ class JewelleryRecommender:
                 f"Processing {row['image_file']}..."
             )
 
-            image = Image.open(
-                image_path
-            ).convert("RGB")
+            with Image.open(image_path) as image:
 
-            embedding = self.get_embedding(image)
+                image = image.convert("RGB")
 
-            self.earring_embeddings.append(
-                embedding
-            )
+                embedding = self.get_embedding(image)
 
-        # Convert list to NumPy matrix
-        self.earring_embeddings = np.vstack(
-            self.earring_embeddings
+                self.earring_embeddings.append(
+                    embedding
+                )
+
+            # Release temporary image/tensor memory
+            gc.collect()
+
+        self.earring_embeddings = np.asarray(
+            self.earring_embeddings,
+            dtype=np.float32
         )
 
         print(
             "Earring embeddings created successfully."
         )
 
-    # =============================================================
-    # Generate CLIP image embedding
-    # =============================================================
-
     def get_embedding(self, image):
 
-        # Prepare image for CLIP
         inputs = self.processor(
             images=image,
             return_tensors="pt"
         )
 
-        # Move tensors to CPU/GPU
+        # Only move required tensor to CPU explicitly
         inputs = {
             key: value.to(self.device)
             for key, value in inputs.items()
         }
 
-        # Generate image features
-        with torch.no_grad():
+        with torch.inference_mode():
 
             image_features = self.model.get_image_features(
                 **inputs
             )
 
-        # ---------------------------------------------------------
-        # Transformers compatibility
-        # ---------------------------------------------------------
-
-        # Some Transformers versions return an object
-        # containing pooler_output.
-        if hasattr(
-            image_features,
-            "pooler_output"
-        ):
+        # Compatibility with different Transformers versions
+        if hasattr(image_features, "pooler_output"):
 
             image_features = (
                 image_features.pooler_output
             )
 
-        # Some versions may return a tuple.
-        elif isinstance(
-            image_features,
-            tuple
-        ):
+        elif isinstance(image_features, tuple):
 
             image_features = image_features[0]
 
-        # ---------------------------------------------------------
-        # Convert tensor to NumPy
-        # ---------------------------------------------------------
+        # Normalize embedding
+        image_features = torch.nn.functional.normalize(
+            image_features,
+            p=2,
+            dim=-1
+        )
 
         embedding = (
             image_features
             .cpu()
             .numpy()[0]
+            .astype(np.float32, copy=True)
         )
 
-        # ---------------------------------------------------------
-        # Normalize embedding
-        # ---------------------------------------------------------
+        # Release temporary tensors
+        del inputs
+        del image_features
 
-        embedding = embedding / (
-            np.linalg.norm(embedding) + 1e-10
-        )
+        gc.collect()
 
         return embedding
-
-    # =============================================================
-    # Recommend matching earrings
-    # =============================================================
 
     def recommend(
         self,
@@ -205,32 +184,21 @@ class JewelleryRecommender:
             necklace_image
         )
 
-        # ---------------------------------------------------------
-        # Calculate cosine similarity
-        # ---------------------------------------------------------
-
-        # Both necklace and earring embeddings
-        # are normalized, so dot product gives
-        # cosine similarity.
-
         similarities = np.dot(
             self.earring_embeddings,
             necklace_embedding
         )
 
-        # ---------------------------------------------------------
-        # Get highest scoring earrings
-        # ---------------------------------------------------------
+        top_k = min(
+            top_k,
+            len(self.earring_embeddings)
+        )
 
         top_indices = np.argsort(
             similarities
         )[::-1][:top_k]
 
         recommendations = []
-
-        # ---------------------------------------------------------
-        # Build response
-        # ---------------------------------------------------------
 
         for index in top_indices:
 
@@ -250,5 +218,11 @@ class JewelleryRecommender:
                     )
                 }
             )
+
+        del necklace_embedding
+        del similarities
+        del top_indices
+
+        gc.collect()
 
         return recommendations
