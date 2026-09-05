@@ -187,25 +187,46 @@ async function loadNecklaces() {
 
         });
 
+// Image error handling with one retry
+const image = card.querySelector("img");
 
-        // Image error handling
-        const image = card.querySelector("img");
+if (image) {
 
-        if (image) {
+    let retryCount = 0;
 
-            image.addEventListener("error", () => {
+    image.addEventListener("error", () => {
 
-                console.error(
-                    "Could not load necklace image:",
-                    filename
-                );
+        console.error(
+            "Could not load necklace image:",
+            filename
+        );
 
-                image.alt =
-                    `Unable to load ${filename}`;
+        if (retryCount < 1) {
 
-            });
+            retryCount++;
+
+            console.log(
+                "Retrying necklace image:",
+                filename
+            );
+
+            setTimeout(() => {
+
+                image.src =
+                    `${API_URL}/images/${filename}?retry=${Date.now()}`;
+
+            }, 1000);
+
+        } else {
+
+            image.alt =
+                `Unable to load ${filename}`;
 
         }
+
+    });
+
+}
 
 
         necklaceGrid.appendChild(card);
